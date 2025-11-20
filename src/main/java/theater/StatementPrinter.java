@@ -37,75 +37,101 @@ public class StatementPrinter {
         final StringBuilder result = new StringBuilder(
                 "Statement for " + invoice.getCustomer() + System.lineSeparator());
 
-        for (Performance p : invoice.getPerformances()) {
+        for (Performance performance : invoice.getPerformances()) {
             result.append(String.format(
                     "  %s: %s (%s seats)%n",
-                    getPlay(p).getName(),
-                    usd(getAmount(p)),
-                    p.getAudience()));
+                    getPlay(performance).getName(),
+                    usd(getAmount(performance)),
+                    performance.getAudience()));
         }
 
-        int totalAmount = getTotalAmount();
-        int volumeCredits = getTotalVolumeCredits();
+        final int totalAmount = getTotalAmount();
+        final int volumeCredits = getTotalVolumeCredits();
 
-        result.append(String.format(
-                "Amount owed is %s%n",
-                usd(totalAmount)));
+        result.append(String.format("Amount owed is %s%n", usd(totalAmount)));
         result.append(String.format("You earned %s credits%n", volumeCredits));
 
         return result.toString();
     }
 
+    /**
+     * Computes the total volume credits for the invoice.
+     *
+     * @return total volume credits
+     */
     public int getTotalVolumeCredits() {
         int result = 0;
-        for (Performance p : invoice.getPerformances()) {
-            result += getVolumeCredits(p);
+        for (Performance performance : invoice.getPerformances()) {
+            result += getVolumeCredits(performance);
         }
         return result;
     }
 
+    /**
+     * Computes the total amount owed for the invoice.
+     *
+     * @return total amount in cents
+     */
     public int getTotalAmount() {
         int result = 0;
-        for (Performance p : invoice.getPerformances()) {
-            result += getAmount(p);
+        for (Performance performance : invoice.getPerformances()) {
+            result += getAmount(performance);
         }
         return result;
     }
 
-    public int getVolumeCredits(Performance p) {
+    /**
+     * Computes the volume credits for a single performance.
+     *
+     * @param performance the performance
+     * @return volume credits
+     */
+    public int getVolumeCredits(Performance performance) {
         int result = 0;
-        result += Math.max(p.getAudience() - Constants.BASE_VOLUME_CREDIT_THRESHOLD, 0);
-        if ("comedy".equals(getPlay(p).getType())) {
-            result += p.getAudience() / Constants.COMEDY_EXTRA_VOLUME_FACTOR;
+        result += Math.max(performance.getAudience() - Constants.BASE_VOLUME_CREDIT_THRESHOLD, 0);
+        if ("comedy".equals(getPlay(performance).getType())) {
+            result += performance.getAudience() / Constants.COMEDY_EXTRA_VOLUME_FACTOR;
         }
         return result;
     }
 
-    public Play getPlay(Performance p) {
-        return plays.get(p.getPlayID());
+    /**
+     * Retrieves the play associated with a performance.
+     *
+     * @param performance the performance
+     * @return the play
+     */
+    public Play getPlay(Performance performance) {
+        return plays.get(performance.getPlayID());
     }
 
-    public int getAmount(Performance p) {
-        Play play = getPlay(p);
+    /**
+     * Computes the cost for a single performance.
+     *
+     * @param performance the performance
+     * @return amount in cents
+     */
+    public int getAmount(Performance performance) {
+        final Play play = getPlay(performance);
         int thisAmount = 0;
 
         switch (play.getType()) {
             case "tragedy":
                 thisAmount = Constants.TRAGEDY_BASE_AMOUNT;
-                if (p.getAudience() > Constants.TRAGEDY_AUDIENCE_THRESHOLD) {
+                if (performance.getAudience() > Constants.TRAGEDY_AUDIENCE_THRESHOLD) {
                     thisAmount += Constants.TRAGEDY_OVER_BASE_CAPACITY_PER_PERSON
-                            * (p.getAudience() - Constants.TRAGEDY_AUDIENCE_THRESHOLD);
+                            * (performance.getAudience() - Constants.TRAGEDY_AUDIENCE_THRESHOLD);
                 }
                 break;
 
             case "comedy":
                 thisAmount = Constants.COMEDY_BASE_AMOUNT;
-                if (p.getAudience() > Constants.COMEDY_AUDIENCE_THRESHOLD) {
+                if (performance.getAudience() > Constants.COMEDY_AUDIENCE_THRESHOLD) {
                     thisAmount += Constants.COMEDY_OVER_BASE_CAPACITY_AMOUNT
                             + Constants.COMEDY_OVER_BASE_CAPACITY_PER_PERSON
-                            * (p.getAudience() - Constants.COMEDY_AUDIENCE_THRESHOLD);
+                            * (performance.getAudience() - Constants.COMEDY_AUDIENCE_THRESHOLD);
                 }
-                thisAmount += Constants.COMEDY_AMOUNT_PER_AUDIENCE * p.getAudience();
+                thisAmount += Constants.COMEDY_AMOUNT_PER_AUDIENCE * performance.getAudience();
                 break;
 
             default:
@@ -115,6 +141,12 @@ public class StatementPrinter {
         return thisAmount;
     }
 
+    /**
+     * Converts an amount in cents to US currency format.
+     *
+     * @param amount the amount in cents
+     * @return formatted currency string
+     */
     public String usd(int amount) {
         return NumberFormat.getCurrencyInstance(Locale.US)
                 .format(amount / (double) Constants.PERCENT_FACTOR);
