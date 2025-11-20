@@ -1,3 +1,4 @@
+3c61628 Task 1.1: update log
 781805e Task 2.4: split loops and extract total calculation methods
 23e784a Task 2.3: extract usd helper for formatting
 9a987fe Task 2.2: refactor volume credits calculation
