@@ -1,3 +1,6 @@
+781805e Task 2.4: split loops and extract total calculation methods
+23e784a Task 2.3: extract usd helper for formatting
+9a987fe Task 2.2: refactor volume credits calculation
 a00f101 Task 2.1: refactor StatementPrinter methods
 161edef Task 1.2: update log.txt
 43d75b8 Change statement file to <= 120 lines
