@@ -110,6 +110,7 @@ public class StatementPrinter {
      *
      * @param performance the performance
      * @return amount in cents
+     * @throws RuntimeException if the play type is unknown
      */
     public int getAmount(Performance performance) {
         final Play play = getPlay(performance);
@@ -140,6 +141,7 @@ public class StatementPrinter {
         }
         return thisAmount;
     }
+
 
     /**
      * Converts an amount in cents to US currency format.
