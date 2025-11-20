@@ -1,3 +1,4 @@
+a00f101 Task 2.1: refactor StatementPrinter methods
 161edef Task 1.2: update log.txt
 43d75b8 Change statement file to <= 120 lines
 0eba698 Change statement file
