@@ -1,3 +1,4 @@
+161edef Task 1.2: update log.txt
 43d75b8 Change statement file to <= 120 lines
 0eba698 Change statement file
 42fb24a Task 1.1
