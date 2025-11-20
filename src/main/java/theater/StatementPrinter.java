@@ -37,8 +37,7 @@ public class StatementPrinter {
         int totalAmount = 0;
         int volumeCredits = 0;
 
-        final StringBuilder result = new StringBuilder(
-                "Statement for " + invoice.getCustomer() + System.lineSeparator());
+        final StringBuilder result = new StringBuilder("Statement for " + invoice.getCustomer() + System.lineSeparator());
         final NumberFormat frmt = NumberFormat.getCurrencyInstance(Locale.US);
 
         for (Performance p : invoice.getPerformances()) {
@@ -66,21 +65,18 @@ public class StatementPrinter {
                     break;
 
                 default:
-                    throw new RuntimeException(
-                            String.format("unknown type: %s", play.getType()));
+                    throw new RuntimeException(String.format("unknown type: %s", play.getType()));
             }
 
             // add volume credits
             volumeCredits += Math.max(p.getAudience() - Constants.BASE_VOLUME_CREDIT_THRESHOLD, 0);
-
             // extra credit for every five comedy attendees
             if ("comedy".equals(play.getType())) {
                 volumeCredits += p.getAudience() / Constants.COMEDY_EXTRA_VOLUME_FACTOR;
             }
 
             // append line for this performance
-            result.append(String.format(
-                    "  %s: %s (%s seats)%n",
+            result.append(String.format("  %s: %s (%s seats)%n",
                     play.getName(),
                     frmt.format(thisAmount / (double) Constants.PERCENT_FACTOR),
                     p.getAudience()));
@@ -88,8 +84,7 @@ public class StatementPrinter {
             totalAmount += thisAmount;
         }
 
-        result.append(String.format(
-                "Amount owed is %s%n",
+        result.append(String.format("Amount owed is %s%n",
                 frmt.format(totalAmount / (double) Constants.PERCENT_FACTOR)));
         result.append(String.format("You earned %s credits%n", volumeCredits));
 
